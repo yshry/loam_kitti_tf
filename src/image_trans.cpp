@@ -18,7 +18,8 @@ void cameraInfoCallback(const sensor_msgs::CameraInfoConstPtr& msg, const ros::P
 {
     sensor_msgs::CameraInfo new_msg = *msg;
     new_msg.header.frame_id = frame_id;
-    std::fill(new_msg.D.begin(), new_msg.D.end(), 0.0); 
+    //std::fill(new_msg.D.begin(), new_msg.D.end(), 0.0);
+
     pub.publish(new_msg);
 }
 
@@ -37,6 +38,8 @@ int main (int argc, char** argv)
     image_transport::Subscriber sub_cclir = it.subscribe("/kitti/camera_color_left/image_raw",10, 
         boost::bind(&imageCallback, _1, pub_cclir, "loam_camera_color_left") 
         );
+
+    //float perspective_rate_x = ;
 
     ros::Publisher pub_cclif = nh.advertise<sensor_msgs::CameraInfo>("/loam/camera_color_left/camera_info", 10);
     ros::Subscriber sub_cclif = nh.subscribe<sensor_msgs::CameraInfo>("/kitti/camera_color_left/camera_info", 10,

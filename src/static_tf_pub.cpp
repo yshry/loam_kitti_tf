@@ -13,11 +13,12 @@ int main(int argc, char** argv)
     tf2_ros::Buffer tfBuffer;
     tf2_ros::TransformListener tfListener(tfBuffer);
 
-    ros::Rate rate(10.0);
+    ros::Rate rate(1.0);
 
     while (node.ok())
     {
-        geometry_msgs::TransformStamped ccr, ccl, cgr, cgl, vl, il, bl, vcl;
+        geometry_msgs::TransformStamped ccr, ccl, cgr, cgl, vl, il, bl;
+        //, vcl;
 
         try{
             il = tfBuffer.lookupTransform("velo_link", "imu_link", ros::Time(0));
@@ -30,10 +31,17 @@ int main(int argc, char** argv)
             //il = tfBuffer.lookupTransform("imu_link", "velo_link", ros::Time(0));
             //bl = tfBuffer.lookupTransform("base_link", "imu_link", ros::Time(0));
             //cgl = tfBuffer.lookupTransform("camera_gray_left", "imu_link", ros::Time(0));
+            //cgr = tfBuffer.lookupTransform("camera_gray_right", "imu_link", ros::Time(0));
+            //ccl = tfBuffer.lookupTransform("camera_color_left", "imu_link", ros::Time(0));
+            //ccr = tfBuffer.lookupTransform("camera_color_right", "imu_link", ros::Time(0));
+
+            //il = tfBuffer.lookupTransform("imu_link", "velo_link", ros::Time(0));
+            //bl = tfBuffer.lookupTransform("base_link", "imu_link", ros::Time(0));
+            //cgl = tfBuffer.lookupTransform("camera_gray_left", "imu_link", ros::Time(0));
             //cgr = tfBuffer.lookupTransform("camera_gray_right", "imu_link" , ros::Time(0));
             //ccl = tfBuffer.lookupTransform("imu_link", "camera_color_left", ros::Time(0));
             //ccr = tfBuffer.lookupTransform("imu_link", "camera_color_right", ros::Time(0));
-            vcl = tfBuffer.lookupTransform("velo_link", "camera_color_left", ros::Time(0));
+            //vcl = tfBuffer.lookupTransform("velo_link", "camera_color_left", ros::Time(0));
         }
         catch (tf2::TransformException &ex)
         {
@@ -62,15 +70,15 @@ int main(int argc, char** argv)
 		vl.transform.rotation.z = quat.z();
 		vl.transform.rotation.w = quat.w();
 
-		quat.setEuler(0.0, 0.0, 0.0);
-        vcl.transform.translation.x =0;
-        vcl.transform.translation.y =0;
-        vcl.transform.rotation.x = quat.x();
-        vcl.transform.rotation.y = quat.y();
-        vcl.transform.rotation.z = quat.z();
-        vcl.transform.rotation.w = quat.w();
-        vcl.header.frame_id = "loam_camera_color_left";
-        vcl.child_frame_id = "virtual_camera_color_left";
+		//quat.setEuler(0.0, 0.0, 0.0);
+        //vcl.transform.translation.x =0;
+        //vcl.transform.translation.y =0;
+        //vcl.transform.rotation.x = quat.x();
+        //vcl.transform.rotation.y = quat.y();
+        //vcl.transform.rotation.z = quat.z();
+        //vcl.transform.rotation.w = quat.w();
+        //vcl.header.frame_id = "loam_camera_color_left";
+        //vcl.child_frame_id = "virtual_camera_color_left";
 
 
 
@@ -96,7 +104,7 @@ int main(int argc, char** argv)
 		static_broadcaster.sendTransform(cgr);
 		static_broadcaster.sendTransform(ccl);
 		static_broadcaster.sendTransform(ccr);
-        static_broadcaster.sendTransform(vcl);
+        //static_broadcaster.sendTransform(vcl);
 
     
 
