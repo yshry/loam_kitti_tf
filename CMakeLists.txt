@@ -8,7 +8,7 @@ project(loam_kitti_tf)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  roscpp tf2_ros image_transport cv_bridge pcl_ros pcl_conversions
+  roscpp tf2 image_transport cv_bridge pcl_ros pcl_conversions tf2_geometry_msgs tf2_ros tf
 )
 find_package (Eigen3 REQUIRED)
 find_package (OpenCV REQUIRED)
