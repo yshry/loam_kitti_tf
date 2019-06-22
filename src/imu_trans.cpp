@@ -42,33 +42,6 @@ class ImuTrans
 
 	void imuCallback(const sensor_msgs::Imu::ConstPtr& imu_in)
 	{
-		//ROS_INFO("Imu Seq: [%d]", msg->header.seq);
-		//ROS_INFO("Imu Orientation x: [%f], y: [%f], z: [%f], w: [%f]", msg->orientation.x,msg->orientation.y,msg->orientation.z,msg->orientation.w);
-
-		/* 
-		tf2::Quaternion quat;
-		geometry_msgs::TransformStamped static_transformStamped;
-
-		quat.setEuler(0.0, M_PI/2.0, M_PI/2.0);
-
-		static_transformStamped.header.stamp = ros::Time::now();
-		static_transformStamped.header.frame_id ="imu_link";
-		static_transformStamped.child_frame_id ="camera";
-
-		static_transformStamped.transform.translation.x = 0.0;
-		static_transformStamped.transform.translation.y = 0.0;
-		static_transformStamped.transform.translation.z = 0.0;
-
-		static_transformStamped.transform.rotation.x = quat.x();
-		static_transformStamped.transform.rotation.y = quat.y();
-		static_transformStamped.transform.rotation.z = quat.z();
-		static_transformStamped.transform.rotation.w = quat.w();
-
-
-		static tf2_ros::StaticTransformBroadcaster static_broadcaster;
-		static_broadcaster.sendTransform(static_transformStamped);
-		*/
-		//ROS_INFO("publish IMU");
 		try{
 			geometry_msgs::TransformStamped ic = __tfBuffer.lookupTransform("loam_imu_link", "camera", ros::Time(0));
 			geometry_msgs::TransformStamped static_transformStamped;
@@ -79,7 +52,6 @@ class ImuTrans
 			static_transformStamped.transform.rotation = ic.transform.rotation;
 
 			sensor_msgs::Imu imu_out;
-			//tf2::doTransform<sensor_msgs::Imu>(*imu_in, imu_out, static_transformStamped);
 			imu_out.header.stamp = imu_in->header.stamp;
 			tf2::doTransform(*imu_in, imu_out, static_transformStamped);
 

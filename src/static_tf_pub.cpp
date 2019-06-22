@@ -28,20 +28,6 @@ int main(int argc, char** argv)
             ccl = tfBuffer.lookupTransform("imu_link", "camera_color_left", ros::Time(0));
             ccr = tfBuffer.lookupTransform("imu_link", "camera_color_right", ros::Time(0));
 
-            //il = tfBuffer.lookupTransform("imu_link", "velo_link", ros::Time(0));
-            //bl = tfBuffer.lookupTransform("base_link", "imu_link", ros::Time(0));
-            //cgl = tfBuffer.lookupTransform("camera_gray_left", "imu_link", ros::Time(0));
-            //cgr = tfBuffer.lookupTransform("camera_gray_right", "imu_link", ros::Time(0));
-            //ccl = tfBuffer.lookupTransform("camera_color_left", "imu_link", ros::Time(0));
-            //ccr = tfBuffer.lookupTransform("camera_color_right", "imu_link", ros::Time(0));
-
-            //il = tfBuffer.lookupTransform("imu_link", "velo_link", ros::Time(0));
-            //bl = tfBuffer.lookupTransform("base_link", "imu_link", ros::Time(0));
-            //cgl = tfBuffer.lookupTransform("camera_gray_left", "imu_link", ros::Time(0));
-            //cgr = tfBuffer.lookupTransform("camera_gray_right", "imu_link" , ros::Time(0));
-            //ccl = tfBuffer.lookupTransform("imu_link", "camera_color_left", ros::Time(0));
-            //ccr = tfBuffer.lookupTransform("imu_link", "camera_color_right", ros::Time(0));
-            //vcl = tfBuffer.lookupTransform("velo_link", "camera_color_left", ros::Time(0));
         }
         catch (tf2::TransformException &ex)
         {
@@ -53,9 +39,6 @@ int main(int argc, char** argv)
    		tf2::Quaternion quat;
 
 		quat.setEuler(3.0*M_PI/2.0, 3.0*M_PI/2.0, 0.0);
-        //quat.setEuler(3.0*M_PI/2.0, 0.0 , M_PI/2.0);
-        //quat.setEulerZYX(M_PI/2.0, M_PI/2.0, 0.0);
-
         ros::Time stamp = il.header.stamp;
 
 		vl.header.stamp = stamp;
@@ -69,18 +52,6 @@ int main(int argc, char** argv)
 		vl.transform.rotation.y = quat.y();
 		vl.transform.rotation.z = quat.z();
 		vl.transform.rotation.w = quat.w();
-
-		//quat.setEuler(0.0, 0.0, 0.0);
-        //vcl.transform.translation.x =0;
-        //vcl.transform.translation.y =0;
-        //vcl.transform.rotation.x = quat.x();
-        //vcl.transform.rotation.y = quat.y();
-        //vcl.transform.rotation.z = quat.z();
-        //vcl.transform.rotation.w = quat.w();
-        //vcl.header.frame_id = "loam_camera_color_left";
-        //vcl.child_frame_id = "virtual_camera_color_left";
-
-
 
         il.header.frame_id = "loam_velo_link";
         il.child_frame_id = "loam_imu_link";
@@ -104,10 +75,7 @@ int main(int argc, char** argv)
 		static_broadcaster.sendTransform(cgr);
 		static_broadcaster.sendTransform(ccl);
 		static_broadcaster.sendTransform(ccr);
-        //static_broadcaster.sendTransform(vcl);
-
-    
-
+        
         rate.sleep();
     }
     return 0;

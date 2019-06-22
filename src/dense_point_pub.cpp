@@ -7,7 +7,7 @@
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
 #include <sensor_msgs/PointCloud2.h>
-#include <pcl_ros/transforms.h>
+//#include <pcl_ros/transforms.h>
 //#include <pcl_ros/impl/transforms.hpp>
 #include <pcl_ros/point_cloud.h>
 #include <pcl_conversions/pcl_conversions.h>
@@ -26,7 +26,7 @@ class DensePointPub
         this->__image_depth_sub = this->__it.subscribe("/loam/camera_color_left/image_depth", 10, &DensePointPub::__imageDepthCallback, this);
         this->__image_raw_sub = this->__it.subscribe("/loam/camera_color_left/image_raw", 10, &DensePointPub::__imageRawCallback, this);
         //this->__cam_info_sub = nh.subscribe("/loam/camera_color_left/camera_info", 10, &DensePointPub::__camInfoCallback, this);
-        this->__point_cloud_pub = nh.advertise<sensor_msgs::PointCloud2>("/dense_depth", 10);
+        this->__point_cloud_pub = nh.advertise<sensor_msgs::PointCloud2>("/dense_point", 10);
 
         sensor_msgs::CameraInfoConstPtr caminfo_msg = ros::topic::waitForMessage<sensor_msgs::CameraInfo>("/loam/camera_color_left/camera_info");
         this->__camInfoCallback(caminfo_msg);
@@ -56,7 +56,7 @@ class DensePointPub
     Eigen::Matrix3f __inv_intrinsics;
     std::string __frame_id;
     //tf2_ros::Buffer __tfBuffer;
-    tf::TransformListener __tfListener;
+    //tf::TransformListener __tfListener;
     cv::Mat __image_depth;
     cv::Mat __image_raw;
     ros::Time __image_depth_stamp;
@@ -107,7 +107,7 @@ class DensePointPub
                 uint16_t depth = this->__image_depth.at<uint16_t>(y,x);
                 cv::Vec3b color = this->__image_raw.at<cv::Vec3b>(y,x);
                 //if (depth >0 && depth < 10*256)
-                if (depth >0 && depth < 10*256)
+                if (depth >0)
                 {
                     Eigen::Vector3f p = (float)(depth / 256.0) * this->__inv_intrinsics * Eigen::Vector3f(x,y,1);
                     cloud[num_points].x = p(0);
@@ -137,6 +137,7 @@ class DensePointPub
 
     void __imageCallbackOld(const sensor_msgs::ImageConstPtr& msg)
     {
+        /*
         const cv::Mat casted_data = cv_bridge::toCvShare(msg, sensor_msgs::image_encodings::MONO16)->image;
         pcl::PointCloud<pcl::PointXYZRGB> cloud;
         int num_pixels = casted_data.rows * casted_data.cols;
@@ -174,6 +175,7 @@ class DensePointPub
         point_msg.header.frame_id = msg->header.frame_id;
  
         this->__point_cloud_pub.publish(point_msg);
+        */
     }
     
     void __camInfoCallback(const sensor_msgs::CameraInfoConstPtr& msg)
@@ -199,4 +201,5 @@ int main(int argc, char** argv)
     DensePointPub dense_point_pub(nh);
     dense_point_pub.spin();
 
+    return 0;
 }

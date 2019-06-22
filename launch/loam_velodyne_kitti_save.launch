@@ -1,0 +1,47 @@
+<launch>
+
+  <arg name="rviz" default="true" />
+  <arg name="scanPeriod" default="0.1" />
+
+  <node pkg="loam_velodyne" type="multiScanRegistration" name="multiScanRegistration" output="screen">
+    <param name="lidar" value="HDL-64E" /> <!-- options: VLP-16  HDL-32  HDL-64E -->
+    <param name="scanPeriod" value="$(arg scanPeriod)" />
+
+    <remap from="/multi_scan_points" to="/kitti/velo/pointcloud" />
+  </node>
+
+  <node pkg="loam_velodyne" type="laserOdometry" name="laserOdometry" output="screen" respawn="true">
+    <param name="scanPeriod" value="$(arg scanPeriod)" />
+  </node>
+
+  <node pkg="loam_velodyne" type="laserMapping" name="laserMapping" output="screen">
+    <param name="scanPeriod" value="$(arg scanPeriod)" />
+  </node>
+
+  <node pkg="loam_velodyne" type="transformMaintenance" name="transformMaintenance" output="screen">
+  </node>
+
+  <group if="$(arg rviz)">
+    <node launch-prefix="nice" pkg="rviz" type="rviz" name="rviz" args="-d $(find loam_kitti_tf)/rviz_cfg/loam_kitti_cfg.rviz" />
+  </group>
+
+  <node pkg="loam_kitti_tf" type=" imu_trans" name="imu_trans" output="screen">
+  </node>
+
+  <node pkg="loam_kitti_tf" type="static_tf_pub" name="static_tf_pub" output="screen">
+  </node>
+
+  <node pkg="loam_kitti_tf" type="image_trans" name="image_trans" output="screen">
+  </node>
+
+  <node pkg="loam_kitti_tf" type="dense_point_saver" name="dense_point_saver" output="screen" args="/data/dataset/loam_kitti_tf/output">
+  </node>
+
+  <!-- node pkg="image_proc" type="image_proc" name="image_proc_depth" output="screen" ns="/loam/camera_color_left" !-->
+  <!-- remap from="image_raw" to="image"/ !-->
+  <!-- remap from="image_depth" to="image_raw"/ !-->
+  <!-- remap from="/loam/camera_color_left/image_rect" to="/loam/camera_color_left/image_depth_rect"/ !-->
+  <!-- remap from="/loam/camera_color_left/image_mono" to="/loam/camera_color_left/image_depth_mono"/ !-->
+  <!--/node!-->
+
+</launch>

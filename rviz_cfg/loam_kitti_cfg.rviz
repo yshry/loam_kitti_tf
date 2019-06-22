@@ -5,6 +5,7 @@ Panels:
     Property Tree Widget:
       Expanded:
         - /Camera2/Visibility1
+        - /PointCloud23
       Splitter Ratio: 0.5
     Tree Height: 348
   - Class: rviz/Selection
@@ -186,7 +187,7 @@ Visualization Manager:
       Max Color: 255; 255; 255
       Max Intensity: 63
       Min Color: 0; 0; 0
-      Min Intensity: 27
+      Min Intensity: 2
       Name: PointCloud2
       Position Transformer: XYZ
       Queue Size: 10
@@ -232,8 +233,8 @@ Visualization Manager:
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
-        Max Value: 237.33180236816406
-        Min Value: 194.72158813476562
+        Max Value: 228.92245483398438
+        Min Value: 2.8597168922424316
         Value: true
       Axis: Z
       Channel Name: intensity
@@ -254,7 +255,7 @@ Visualization Manager:
       Size (Pixels): 3
       Size (m): 0.009999999776482582
       Style: Flat Squares
-      Topic: /dense_depth
+      Topic: /dense_point
       Unreliable: false
       Use Fixed Frame: true
       Use rainbow: false
