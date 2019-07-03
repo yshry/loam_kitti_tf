@@ -1,0 +1,7 @@
+ <launch>
+  <node pkg="loam_kitti_tf" type="color_point_cloud" name="color_point_cloud" output="screen" launch-prefix="gdb --args">
+   <remap from="/pointcloud" to="/velodyne_cloud_registered"/>
+   <remap from="/image_raw" to="/loam/camera_color_left/image_raw"/>
+   <remap from="/camera_info" to="/loam/camera_color_left/camera_info"/>
+  </node>
+</launch>

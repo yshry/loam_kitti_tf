@@ -22,10 +22,10 @@
   </node>
 
   <group if="$(arg rviz)">
-    <node launch-prefix="nice" pkg="rviz" type="rviz" name="rviz" args="-d $(find loam_kitti_tf)/rviz_cfg/loam_kitti_cfg.rviz" />
+    <node launch-prefix="nice" pkg="rviz" type="rviz" name="rviz" args="-d $(find loam_kitti_tf)/rviz_cfg/loam_kitti_cfg_gslic.rviz" />
   </group>
 
-  <node pkg="loam_kitti_tf" type="imu_trans" name="imu_trans" output="screen">
+  <node pkg="loam_kitti_tf" type=" imu_trans" name="imu_trans" output="screen">
   </node>
 
   <node pkg="loam_kitti_tf" type="static_tf_pub" name="static_tf_pub" output="screen">
@@ -35,15 +35,6 @@
   </node>
 
   <node pkg="loam_kitti_tf" type="dense_point_pub" name="dense_point_pub" output="screen">
-   <!-- param name="/cutoff_depth" value="10"/ -->
-  </node>
-
-  <node pkg="loam_kitti_tf" type="color_point_cloud" name="color_point_cloud" output="screen">
-   <remap from="/pointcloud" to="/velodyne_cloud_registered"/>
-   <!-- remap from="/pointcloud" to="/velodyne_cloud_3"/ !-->
-   <!-- remap from="/pointcloud" to="/kitti/velo/pointcloud"/ !-->
-   <remap from="/image_raw" to="/loam/camera_color_left/image_raw"/>
-   <remap from="/camera_info" to="/loam/camera_color_left/camera_info"/>
   </node>
 
   <!-- node pkg="image_proc" type="image_proc" name="image_proc_depth" output="screen" ns="/loam/camera_color_left" !-->

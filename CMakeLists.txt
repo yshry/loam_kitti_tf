@@ -157,6 +157,10 @@ target_link_libraries(dense_point_pub ${catkin_LIBRARIES} ${OpenCV_LIBS} ${PCL_L
 add_executable(dense_point_saver src/dense_point_saver.cpp)
 target_link_libraries(dense_point_saver ${catkin_LIBRARIES} ${PCL_LIBRARIES})
 
+add_executable(color_point_cloud src/color_point_cloud.cpp)
+target_link_libraries(color_point_cloud ${catkin_LIBRARIES} ${OpenCV_LIBS} ${PCL_LIBRARIES})
+
+
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
 ## target back to the shorter version for ease of user use

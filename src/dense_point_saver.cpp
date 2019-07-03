@@ -30,7 +30,6 @@ class DensePointSaver
         }
         ROS_INFO ((boost::format("set output directory to \"%s\"") % this->__dir_path).str().c_str());
         this->__dense_point_subscriber = nh.subscribe<sensor_msgs::PointCloud2>("/dense_point", 10, &DensePointSaver::__denseDepthCallback, this);
-
         //this->__cloud.reset(new pcl::PCLPointCloud2());
     }
 
@@ -50,7 +49,7 @@ class DensePointSaver
     private:
     boost::filesystem::path __dir_path;
     ros::Subscriber __dense_point_subscriber;
-    unsigned int __file_index;
+    unsigned int __file_index=0;
     const float __timeout = 5.0;
     const int __stack_size = 10;
     unsigned int __current_stack = 0;

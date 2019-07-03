@@ -15,6 +15,7 @@
 #include <tf2_ros/transform_listener.h>
 #include <tf2/transform_datatypes.h>
 //#include <tf2_sensor_msgs.h>
+#include <sstream>
 
 
 class DensePointPub
@@ -30,6 +31,16 @@ class DensePointPub
 
         sensor_msgs::CameraInfoConstPtr caminfo_msg = ros::topic::waitForMessage<sensor_msgs::CameraInfo>("/loam/camera_color_left/camera_info");
         this->__camInfoCallback(caminfo_msg);
+
+        //if (!(nh.getParam("/cutoff_depth", this->__cutoff_depth)))
+        //{
+        //    this->__cutoff_depth = 0;
+        //}
+
+        //std::stringstream ss;
+        //ss  << "set cutoff depth to " << this->__cutoff_depth;
+
+        //ROS_WARN(ss.str().c_str());
     }
 
     void spin()
@@ -63,6 +74,7 @@ class DensePointPub
     ros::Time __image_raw_stamp;
     bool __new_depth = false;
     bool __new_raw = false;
+    //int __cutoff_depth;
 
     void __imageDepthCallback(const sensor_msgs::ImageConstPtr& msg)
     {
@@ -87,7 +99,7 @@ class DensePointPub
         ROS_INFO("new depth and new raw");
 
 
-        if (fabs((this->__image_depth_stamp - this->__image_raw_stamp).toSec()) < 0.05)
+        if (fabs((this->__image_depth_stamp - this->__image_raw_stamp).toSec()) > 0.05)
             return;
         ROS_INFO("stamp matched");
         
@@ -124,7 +136,7 @@ class DensePointPub
         cloud.points.resize(num_points);
         cloud.width = num_points;
 
-        geometry_msgs::TransformStamped transform_stamped;
+        //geometry_msgs::TransformStamped transform_stamped;
         sensor_msgs::PointCloud2 point_msg;
         pcl::toROSMsg(cloud, point_msg);
         point_msg.header.stamp = this->__image_depth_stamp;
