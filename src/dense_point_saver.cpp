@@ -20,7 +20,7 @@
 class DensePointSaver
 {
     public:
-    DensePointSaver(ros::NodeHandle nh, const std::string dir_path)
+    DensePointSaver(ros::NodeHandle& nh, const std::string& dir_path, const std::string& msg_name)
     : __cloud(new pcl::PCLPointCloud2()), __pcd_writer()
     {
         this->__dir_path = boost::filesystem::path(dir_path);
@@ -29,7 +29,7 @@ class DensePointSaver
             ROS_INFO( (boost::format("directory \"%s\" created") % this->__dir_path).str().c_str());
         }
         ROS_INFO ((boost::format("set output directory to \"%s\"") % this->__dir_path).str().c_str());
-        this->__dense_point_subscriber = nh.subscribe<sensor_msgs::PointCloud2>("/dense_point", 10, &DensePointSaver::__denseDepthCallback, this);
+        this->__dense_point_subscriber = nh.subscribe<sensor_msgs::PointCloud2>(msg_name, 10, &DensePointSaver::__denseDepthCallback, this);
         //this->__cloud.reset(new pcl::PCLPointCloud2());
     }
 
@@ -99,6 +99,7 @@ int main(int argc, char** argv)
         ("help", "produce help message")
         ("dir_path", po::value<std::string>()->default_value("./dense_point"), "output directory path")
         ("date_flag,D", po::bool_switch(), "set to add datetime to directory name") 
+        ("message,M", po::value<std::string>()->default_value("/dense_point"), "pointcloud message to subscribe")
     ;
 
     po::positional_options_description p;
@@ -119,6 +120,7 @@ int main(int argc, char** argv)
 
     std::string dir_path = vm["dir_path"].as<std::string>();
     bool date_flag = ! vm["date_flag"].as<bool>();
+    std::string msg_name = vm["message"].as<std::string>();
 
     time_t rawtime;
     struct tm * timeinfo;
@@ -136,7 +138,7 @@ int main(int argc, char** argv)
     ros::init(argc, argv, "dense_point_saver");
     ros::NodeHandle nh;
 
-    DensePointSaver dense_point_saver(nh, dir_path);
+    DensePointSaver dense_point_saver(nh, dir_path, msg_name);
     dense_point_saver.spin();
 
     return 0;
