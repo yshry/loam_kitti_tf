@@ -148,6 +148,9 @@ add_executable(static_tf_pub src/static_tf_pub.cpp)
 #add_dependencies(imu_trans sensor_msgs_generate_messages_cpp)
 target_link_libraries(static_tf_pub ${catkin_LIBRARIES})
 
+add_executable(cam_init_pub src/cam_init_pub.cpp)
+target_link_libraries(cam_init_pub ${catkin_LIBRARIES})
+
 add_executable(image_trans src/image_trans.cpp)
 target_link_libraries(image_trans ${catkin_LIBRARIES})
 
@@ -159,6 +162,12 @@ target_link_libraries(dense_point_saver ${catkin_LIBRARIES} ${PCL_LIBRARIES})
 
 add_executable(color_point_cloud src/color_point_cloud.cpp)
 target_link_libraries(color_point_cloud ${catkin_LIBRARIES} ${OpenCV_LIBS} ${PCL_LIBRARIES})
+
+add_executable(image_saver_node src/image_saver_node.cpp)
+target_link_libraries(image_saver_node ${catkin_LIBRARIES})
+
+add_executable(odometry_saver src/odometry_saver.cpp)
+target_link_libraries(odometry_saver ${catkin_LIBRARIES})
 
 
 ## Rename C++ executable without prefix

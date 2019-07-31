@@ -20,8 +20,8 @@
 class DensePointSaver
 {
     public:
-    DensePointSaver(ros::NodeHandle& nh, const std::string& dir_path, const std::string& msg_name)
-    : __cloud(new pcl::PCLPointCloud2()), __pcd_writer()
+    DensePointSaver(ros::NodeHandle& nh, const std::string& dir_path, const std::string& msg_name, const int& stack, bool compressed)
+    : __cloud(new pcl::PCLPointCloud2()), __pcd_writer(), __stack_size(stack), __compressed(compressed), __timeout(stack/10*2)
     {
         this->__dir_path = boost::filesystem::path(dir_path);
         if(boost::filesystem::create_directory(this->__dir_path))
@@ -29,7 +29,7 @@ class DensePointSaver
             ROS_INFO( (boost::format("directory \"%s\" created") % this->__dir_path).str().c_str());
         }
         ROS_INFO ((boost::format("set output directory to \"%s\"") % this->__dir_path).str().c_str());
-        this->__dense_point_subscriber = nh.subscribe<sensor_msgs::PointCloud2>(msg_name, 10, &DensePointSaver::__denseDepthCallback, this);
+        this->__dense_point_subscriber = nh.subscribe<sensor_msgs::PointCloud2>(msg_name, 1000, &DensePointSaver::__denseDepthCallback, this);
         //this->__cloud.reset(new pcl::PCLPointCloud2());
     }
 
@@ -50,14 +50,16 @@ class DensePointSaver
     boost::filesystem::path __dir_path;
     ros::Subscriber __dense_point_subscriber;
     unsigned int __file_index=0;
-    const float __timeout = 5.0;
-    const int __stack_size = 10;
+    const float __timeout;
+    const int __stack_size;
     unsigned int __current_stack = 0;
     pcl::PCLPointCloud2::Ptr __cloud;
     tf::TransformListener __tfListener;
     std::string __target_frame = "camera_init";
     pcl::PCDWriter __pcd_writer;
     ros::Time __last_msg_time;
+    bool __compressed;
+    std::vector<ros::Time> __time_vec;
 
     void __denseDepthCallback(const sensor_msgs::PointCloud2ConstPtr& msg)
     {
@@ -72,6 +74,7 @@ class DensePointSaver
         pcl::concatenatePointCloud (*this->__cloud, msg_cloud, *this->__cloud);
         this->__current_stack += 1;
         this->__last_msg_time = msg->header.stamp;
+        __time_vec.push_back(msg->header.stamp);
     }
 
     void __savePointCloud()
@@ -82,11 +85,34 @@ class DensePointSaver
             fabs((ros::Time::now() - this->__last_msg_time).toSec()) < this->__timeout)
             return;
         
-        std::string filename = (this->__dir_path / (boost::format("%010d.pcd")%this->__file_index).str()).string();
-        this->__pcd_writer.writeBinaryCompressed(filename, *this->__cloud);
+        if (this->__compressed)
+        {
+            std::string filename = (this->__dir_path / (boost::format("%016d.pcd")%this->__file_index).str()).string();
+            this->__pcd_writer.writeBinaryCompressed(filename, *this->__cloud);
+        }
+        else
+        {
+            std::string filename = (this->__dir_path / (boost::format("%016d.txt")%this->__file_index).str()).string();
+            this->__pcd_writer.writeBinary(filename, *this->__cloud);
+            //pcl::PointCloud<pcl::PointXYZI> laserCloudIn;
+            //pcl::fromPCLPointCloud2( *this->__cloud, laserCloudIn);
+            //size_t cloudSize = laserCloudIn.size();
+            //std::fstream ofs;
+            //ofs.open(filename, std::ofstream::out);
+            //for (int i = 0; i < cloudSize; i++) 
+            //{
+            //    ofs << laserCloudIn[i].x << " " << laserCloudIn[i].y << " " << laserCloudIn[i].z << " ";
+            //    ofs << laserCloudIn[i].intensity << " " << "0 " << __time_vec[i].sec << ".";
+            //    ofs << boost::format("%|09|")%__time_vec[i].nsec;
+            //    ofs << std::endl;
+            //}
+            //ofs.close();
+
+        }
         this->__current_stack = 0;
         this->__file_index += 1;
         this->__cloud.reset(new pcl::PCLPointCloud2());
+        this->__time_vec.clear();
     }
 };
 
@@ -100,6 +126,8 @@ int main(int argc, char** argv)
         ("dir_path", po::value<std::string>()->default_value("./dense_point"), "output directory path")
         ("date_flag,D", po::bool_switch(), "set to add datetime to directory name") 
         ("message,M", po::value<std::string>()->default_value("/dense_point"), "pointcloud message to subscribe")
+        ("stack,S", po::value<int>()->default_value(10), "number to stack")
+        ("raw,R", po::bool_switch(), "set to save uncompressed pcd (default compressed)") 
     ;
 
     po::positional_options_description p;
@@ -121,6 +149,8 @@ int main(int argc, char** argv)
     std::string dir_path = vm["dir_path"].as<std::string>();
     bool date_flag = ! vm["date_flag"].as<bool>();
     std::string msg_name = vm["message"].as<std::string>();
+    int stack = vm["stack"].as<int>();
+    bool compressed = ! vm["raw"].as<bool>();
 
     time_t rawtime;
     struct tm * timeinfo;
@@ -138,7 +168,7 @@ int main(int argc, char** argv)
     ros::init(argc, argv, "dense_point_saver");
     ros::NodeHandle nh;
 
-    DensePointSaver dense_point_saver(nh, dir_path, msg_name);
+    DensePointSaver dense_point_saver(nh, dir_path, msg_name, stack, compressed);
     dense_point_saver.spin();
 
     return 0;

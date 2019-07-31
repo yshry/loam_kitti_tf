@@ -75,7 +75,7 @@ int main(int argc, char** argv)
 		static_broadcaster.sendTransform(cgr);
 		static_broadcaster.sendTransform(ccl);
 		static_broadcaster.sendTransform(ccr);
-        
+
         rate.sleep();
     }
     return 0;
