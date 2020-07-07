@@ -128,6 +128,7 @@ int main(int argc, char** argv)
         ("message,M", po::value<std::string>()->default_value("/dense_point"), "pointcloud message to subscribe")
         ("stack,S", po::value<int>()->default_value(10), "number to stack")
         ("raw,R", po::bool_switch(), "set to save uncompressed pcd (default compressed)") 
+        ("id,I", po::value<int>()->default_value(0), "id")
     ;
 
     po::positional_options_description p;
@@ -147,10 +148,11 @@ int main(int argc, char** argv)
     //std::cout << vm["dir_path"].as<std::string>() << ", " << vm["date_flag"].as<bool>() << std::endl;
 
     std::string dir_path = vm["dir_path"].as<std::string>();
-    bool date_flag = ! vm["date_flag"].as<bool>();
+    bool date_flag = vm["date_flag"].as<bool>();
     std::string msg_name = vm["message"].as<std::string>();
     int stack = vm["stack"].as<int>();
     bool compressed = ! vm["raw"].as<bool>();
+    int id = vm["id"].as<int>();
 
     time_t rawtime;
     struct tm * timeinfo;
@@ -165,7 +167,10 @@ int main(int argc, char** argv)
         dir_path = dir_path + "_"+buffer;
     //std::cout << dir_path;
 
-    ros::init(argc, argv, "dense_point_saver");
+    std::stringstream ss;
+    ss << "dense_point_saver_" << id;
+
+    ros::init(argc, argv, ss.str());
     ros::NodeHandle nh;
 
     DensePointSaver dense_point_saver(nh, dir_path, msg_name, stack, compressed);

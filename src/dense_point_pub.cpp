@@ -125,9 +125,9 @@ class DensePointPub
                     cloud[num_points].x = p(0);
                     cloud[num_points].y = p(1);
                     cloud[num_points].z = p(2);
-                    cloud[num_points].r = color(2);
+                    cloud[num_points].r = color(0);
                     cloud[num_points].g = color(1);
-                    cloud[num_points].b = color(0);
+                    cloud[num_points].b = color(2);
                     num_points++;
                 }
                

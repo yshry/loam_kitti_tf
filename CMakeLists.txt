@@ -148,6 +148,10 @@ add_executable(static_tf_pub src/static_tf_pub.cpp)
 #add_dependencies(imu_trans sensor_msgs_generate_messages_cpp)
 target_link_libraries(static_tf_pub ${catkin_LIBRARIES})
 
+add_executable(static_tf_pub_2 src/static_tf_pub_2.cpp)
+#add_dependencies(imu_trans sensor_msgs_generate_messages_cpp)
+target_link_libraries(static_tf_pub_2 ${catkin_LIBRARIES})
+
 add_executable(cam_init_pub src/cam_init_pub.cpp)
 target_link_libraries(cam_init_pub ${catkin_LIBRARIES})
 
