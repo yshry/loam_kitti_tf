@@ -22,8 +22,8 @@
   </node>
 
 
-  <node pkg="loam_kitti_tf" type="imu_trans" name="imu_trans" output="screen">
-  </node>
+  <!-- node pkg="loam_kitti_tf" type="imu_trans" name="imu_trans" output="screen" !-->
+  <!-- /node !-->
 
   <node pkg="loam_kitti_tf" type="static_tf_pub" name="static_tf_pub" output="screen">
   </node>

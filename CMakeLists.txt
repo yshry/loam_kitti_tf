@@ -8,7 +8,7 @@ project(loam_kitti_tf)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  roscpp tf2 image_transport cv_bridge pcl_ros pcl_conversions tf2_geometry_msgs tf2_ros tf
+  roscpp tf2 image_transport cv_bridge pcl_ros pcl_conversions tf2_geometry_msgs tf2_ros tf tf2_sensor_msgs
 )
 find_package (Eigen3 REQUIRED)
 find_package (OpenCV REQUIRED)
@@ -122,9 +122,15 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
   ${EIGEN_INCLUDE_DIRS}
   ${PCL_INCLUDE_DIRS}
-  ~/catkin_ws/src/imu_pipeline/imu_transformer/include/imu_transformer
+  #~/catkin_ws/src/imu_pipeline/imu_transformer/include/imu_transformer
 )
 
+#message (
+#  ${catkin_INCLUDE_DIRS}
+#  ${EIGEN_INCLUDE_DIRS}
+#  ${PCL_INCLUDE_DIRS}
+#  ) 
+	
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
 #   src/${PROJECT_NAME}/loam_kitti_tf.cpp
@@ -140,9 +146,9 @@ include_directories(
 ## The recommended prefix ensures that target names across packages don't collide
 # add_executable(${PROJECT_NAME}_node src/loam_kitti_tf_node.cpp)
 
-add_executable(imu_trans src/imu_trans.cpp)
+#add_executable(imu_trans src/imu_trans.cpp)
 #add_dependencies(imu_trans sensor_msgs_generate_messages_cpp)
-target_link_libraries(imu_trans ${catkin_LIBRARIES})
+#target_link_libraries(imu_trans ${catkin_LIBRARIES})
 
 add_executable(static_tf_pub src/static_tf_pub.cpp)
 #add_dependencies(imu_trans sensor_msgs_generate_messages_cpp)
@@ -164,6 +170,9 @@ target_link_libraries(dense_point_pub ${catkin_LIBRARIES} ${OpenCV_LIBS} ${PCL_L
 add_executable(dense_point_saver src/dense_point_saver.cpp)
 target_link_libraries(dense_point_saver ${catkin_LIBRARIES} ${PCL_LIBRARIES})
 
+add_executable(point_saver src/point_saver.cpp)
+target_link_libraries(point_saver ${catkin_LIBRARIES} ${PCL_LIBRARIES})
+
 add_executable(color_point_cloud src/color_point_cloud.cpp)
 target_link_libraries(color_point_cloud ${catkin_LIBRARIES} ${OpenCV_LIBS} ${PCL_LIBRARIES})
 
@@ -173,6 +182,9 @@ target_link_libraries(image_saver_node ${catkin_LIBRARIES})
 add_executable(odometry_saver src/odometry_saver.cpp)
 target_link_libraries(odometry_saver ${catkin_LIBRARIES})
 
+catkin_install_python(PROGRAMS scripts/depth_pub.py 
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
